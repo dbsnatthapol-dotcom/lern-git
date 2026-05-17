@@ -60,6 +60,7 @@ function MessageBubble({ msg }: { msg: Message }) {
 
 export default function AITutorPage() {
   const { t, language } = useLanguage();
+  const [aiMode, setAiMode] = useState<"demo" | "ai" | null>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -101,6 +102,7 @@ export default function AITutorPage() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "API error");
+      if (data.mode) setAiMode(data.mode);
 
       setMessages((prev) => [
         ...prev,
@@ -157,11 +159,21 @@ export default function AITutorPage() {
           <h1 className="font-bold text-xl">{t.aiTutor.title}</h1>
           <p className="text-purple-100 text-sm">{t.aiTutor.subtitle}</p>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex flex-col items-end gap-1.5">
           <div className="flex items-center gap-1.5 text-xs bg-white/20 rounded-full px-3 py-1.5">
             <Sparkles className="w-3.5 h-3.5" />
             Claude AI
           </div>
+          {aiMode === "demo" && (
+            <span className="text-xs bg-yellow-400 text-yellow-900 font-bold px-2.5 py-0.5 rounded-full">
+              Demo Mode
+            </span>
+          )}
+          {aiMode === "ai" && (
+            <span className="text-xs bg-green-400 text-green-900 font-bold px-2.5 py-0.5 rounded-full">
+              ✓ Claude AI
+            </span>
+          )}
         </div>
       </div>
 
